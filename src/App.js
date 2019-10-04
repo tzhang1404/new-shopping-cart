@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, { useEffect, useState } from 'react';
 import 'rbx/index.css';
-import { Button, Container, Title, Column, Notification} from 'rbx';
+import { Button, Container, Title, Column, Box, Image} from 'rbx';
 
 
 const header = {
@@ -10,14 +10,26 @@ const header = {
 };
 
 const Banner = ({ title }) => (
-  <Title>{ title }</Title>
+  <Title size = {1}>{ title }</Title>
+);
+
+const getProductImagePath = product => (
+  "data/products/" + product.sku.toString() + "_1.jpg"
 );
 
 const Product = ({ product }) => (
   <Column size="one-quarter">
-    <Notification textAlign="centered">
+    <Box>
+      <Image.Container>
+        <Image
+          alt="Image"
+          src= {getProductImagePath(product)}
+        />
+      </Image.Container>
+    </Box>
+    <Title subtitle textAlign="centered">
       { product.title }
-    </Notification>
+    </Title>
   </Column>
 );
 
@@ -45,10 +57,6 @@ const App = () => {
     <Container>
       <Banner title = {header.title} />
       <ProductList products = {products} />
-      {/* <ul>
-
-        {products.map(product => <li key={product.sku}>{product.title}</li>)}
-      </ul> */}
     </Container>
   );
 };
