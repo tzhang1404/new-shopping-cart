@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import 'rbx/index.css';
 import { Button, Container, Title, Column, Box, Image} from 'rbx';
 
+var sizes = ["S", "M", "L", "XL"];
 
 const header = {
   title: "Wildcat Closet"
@@ -17,19 +18,62 @@ const getProductImagePath = product => (
   "data/products/" + product.sku.toString() + "_1.jpg"
 );
 
+const ProductImage = ({ product }) => (
+  <Image.Container>
+        <Image
+          alt="Image"
+          src= {getProductImagePath( product )}
+        />
+  </Image.Container>
+);
+
+const ProductPrice = ({ product }) => (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '20px'
+}}>
+   ${product.price.toString()}
+  </div>
+)
+
+const ProductSize = () => (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}}>
+  <Button.Group>
+        {sizes.map(size => <Button color = "light"> {size} </Button>)}
+    </Button.Group>  
+    
+  </div>
+    
+);
+
+const ProductInfo = ({ product }) => (
+  <React.Fragment>
+    <Title size = {6} textAlign="centered">
+      { product.title }
+    </Title>
+    <Title subtitle size = {6} textAlign="centered">
+      {product.description.length === 0 ? "No Description" : product.description.toString()}
+    </Title>
+  </React.Fragment> 
+);
+
 const Product = ({ product }) => (
   <Column size="one-quarter">
     <Box>
-      <Image.Container>
-        <Image
-          alt="Image"
-          src= {getProductImagePath(product)}
-        />
-      </Image.Container>
+      <ProductImage product = {product} />
     </Box>
-    <Title subtitle textAlign="centered">
-      { product.title }
-    </Title>
+    <Container>
+      <ProductPrice product = {product} />
+      <ProductSize/>
+      <ProductInfo product = {product} />
+    </Container>
+    
   </Column>
 );
 
