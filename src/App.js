@@ -1,8 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
 import React, { useEffect, useState } from 'react';
 import 'rbx/index.css';
-import { Button, Container, Title, Column, Box, Image} from 'rbx';
+import { Button, Container, Title, Column, Box, Image, Dropdown} from 'rbx';
+import Cart from './components/cart.js'
 
 var sizes = ["S", "M", "L", "XL"];
 
@@ -43,9 +43,9 @@ const ProductSize = () => (
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-}}>
-  <Button.Group>
-        {sizes.map(size => <Button color = "light"> {size} </Button>)}
+  }}>
+    <Button.Group>
+          {sizes.map(size => <Button key = {size} color = "light"> {size} </Button>)}
     </Button.Group>  
     
   </div>
@@ -63,23 +63,45 @@ const ProductInfo = ({ product }) => (
   </React.Fragment> 
 );
 
-const Product = ({ product }) => (
+const useSelection = () => {
+  const [selected, setSelected] = useState([]);
+  const toggle = (x) => {
+    setSelected(selected.includes(x) ? selected.filter(y => y !== x) : [x].concat(selected))
+  };
+  return [ selected, toggle ];
+};
+
+const AddCart = ({state, product}) => {
+  return (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }}>
+    <Button onClick = {() => state.toggle(product.title)} variant="contained">Add To Cart</Button>
+  </div>
+  );
+}
+
+
+const Product = ({ state, product }) => (
   <Column size="one-quarter">
-    <Box>
-      <ProductImage product = {product} />
-    </Box>
     <Container>
+      <Box>
+        <ProductImage product = {product} />
+      </Box>
       <ProductPrice product = {product} />
       <ProductSize/>
       <ProductInfo product = {product} />
+      <AddCart state = {state} product = {product} />
     </Container>
     
   </Column>
 );
 
-const ProductList = ({ products }) => (
+const ProductList = ({ state, products }) => (
   <Column.Group vcentered multiline>
-    {products.map(product => <Product key = {product.sku} product = { product } />)}
+    {products.map(product => <Product state = {state} key = {product.sku} product = { product } />)}
   </Column.Group>
 );
 
@@ -87,6 +109,8 @@ const ProductList = ({ products }) => (
 
 const App = () => {
   const [data, setData] = useState({});
+  const [selectedItem, toggle] = useSelection();
+  console.log(selectedItem);
   const products = Object.values(data);
   useEffect(() => {
     const fetchProducts = async () => {
@@ -94,13 +118,17 @@ const App = () => {
       const json = await response.json();
       setData(json);
     };
+    const fetchCart = async () => {
+      const response = await fetch 
+    }
     fetchProducts();
   }, []);
 
   return (
     <Container>
       <Banner title = {header.title} />
-      <ProductList products = {products} />
+      
+      <ProductList state = {{selectedItem, toggle}} products = {products} />
     </Container>
   );
 };
