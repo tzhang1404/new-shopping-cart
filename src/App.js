@@ -105,6 +105,34 @@ const ProductList = ({ state, products }) => (
   </Column.Group>
 );
 
+const CartItem = ({state, item}) => {
+  return (
+    <div >
+      <Button onClick = {() => state.toggle(item)} color = "danger" size = "small" offset = "one-quarter">X</Button>
+      <div offset = "half">{item}</div>
+    </div>
+  )
+}
+
+
+const MyCart = ({state, items}) => {
+  return (
+      <div style={{ height: '50px' }}>
+      <Dropdown>
+      <Dropdown.Trigger>
+          <Button>
+          <span>My Cart</span>
+          </Button>
+      </Dropdown.Trigger>
+      <Dropdown.Menu>
+          <Dropdown.Content>
+              {items.map(item => <Dropdown.Item key = {item}> <CartItem state = {state} item = {item} /> </Dropdown.Item>)}
+          </Dropdown.Content>
+      </Dropdown.Menu>
+      </Dropdown>
+  </div>
+  );
+}
 
 
 const App = () => {
@@ -127,7 +155,7 @@ const App = () => {
   return (
     <Container>
       <Banner title = {header.title} />
-      
+      <MyCart state =  {{selectedItem, toggle}} items = {selectedItem} />
       <ProductList state = {{selectedItem, toggle}} products = {products} />
     </Container>
   );
